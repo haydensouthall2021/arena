@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Last Man</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070A;--card:#0D1217;--card2:#131A21;--line:#1E2A34;
+ --txt:#F5F8FA;--dim:#7A8F9C;--faint:#445663;--gold:#F7B92B;--up:#2EE08C;--down:#FF5436}
+:root[data-theme="light"]{--bg:#EEEAE2;--card:#FFF;--card2:#F5F2EA;--line:#D7D0C4;
+ --txt:#111820;--dim:#56666F;--faint:#8593A0;--gold:#8A6206;--up:#117A52;--down:#A5321B}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--txt);font-family:Archivo,system-ui,sans-serif;
+ font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 70px}
+button{font:inherit;font-weight:700;cursor:pointer;border-radius:7px;border:1px solid var(--line);
+ background:var(--card2);color:var(--txt);padding:9px 15px;font-size:13px}
+button:hover:not(:disabled){border-color:var(--gold)}
+button:disabled{opacity:.3;cursor:not-allowed}
+button.sm{padding:6px 11px;font-size:11.5px}
+a{color:var(--gold);text-decoration:none}a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:20}
+.hin{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.logo{font-weight:900;font-size:16px;letter-spacing:-.02em}.logo i{color:var(--gold);font-style:normal}
+.m{display:flex;flex-direction:column;line-height:1.08}
+.m b{font-size:14.5px;font-weight:800}.m b.g{color:var(--gold)}
+.m s{font-size:9px;color:var(--dim);text-decoration:none;text-transform:uppercase;letter-spacing:.06em}
+.hin .r{margin-left:auto;display:flex;gap:7px;align-items:center}
+.chip{font-size:9.5px;padding:3px 8px;border:1px solid var(--line);border-radius:99px;color:var(--dim)}
+.dotlive{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--up);
+ margin-right:5px;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+.stage{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:20px;
+ padding:26px;text-align:center;position:relative;overflow:hidden}
+.stage.mine{border-color:var(--gold)}
+.stage.hot{border-color:var(--down)}
+.stage.hot::before{content:"";position:absolute;inset:0;
+ background:radial-gradient(circle at 50% 0,rgba(255,84,54,.13),transparent 62%);pointer-events:none}
+.kick{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.camint{font-size:12px;color:var(--gold);word-break:break-all;cursor:pointer;margin:4px 0 14px}
+.who{font-size:21px;font-weight:900;margin:5px 0 2px;letter-spacing:-.02em;word-break:break-all}
+.who.me{color:var(--gold)}
+.sub{font-size:11px;color:var(--dim)}
+.pot{margin:16px 0 0;font-size:clamp(40px,9vw,66px);font-weight:900;line-height:.95;
+ color:var(--up);letter-spacing:-.04em}
+.potsub{font-size:12px;color:var(--dim);margin-bottom:12px}
+.clock{font-size:clamp(30px,6.5vw,46px);font-weight:900;letter-spacing:-.03em}
+.clock.warn{color:var(--gold)}
+.clock.hot{color:var(--down);animation:beat .85s infinite}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.clocksub{font-size:11px;color:var(--dim);margin-bottom:14px}
+.bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin:0 auto 16px;max-width:480px}
+.bar i{display:block;height:100%;background:var(--gold);transition:width .2s linear}
+.bar i.hot{background:var(--down)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.big{font-size:16px;font-weight:800;padding:15px 28px;border-radius:9px}
+.big.gold{background:var(--gold);border-color:var(--gold);color:#05070A}
+.big.up{background:var(--up);border-color:var(--up);color:#05070A}
+.msg{margin-top:12px;font-size:12.5px;min-height:18px}
+.msg.err{color:var(--down)}.msg.ok{color:var(--up)}.msg.dim{color:var(--dim)}
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tcard b{display:block;font-size:17px;font-weight:800;margin-bottom:2px}
+.tcard b.g{color:var(--gold)}.tcard b.u{color:var(--up)}
+.tcard s{font-size:10px;color:var(--dim);text-decoration:none;display:block;line-height:1.4}
+.tcard a{font-size:10px}
+.row2{display:grid;grid-template-columns:1.25fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:760px){.row2{grid-template-columns:1fr}}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.box h3{margin:0;padding:10px 14px;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--dim);border-bottom:1px solid var(--line);font-weight:800;display:flex;align-items:center}
+.ev{padding:9px 14px;border-bottom:1px solid var(--line);font-size:12.5px;display:flex;gap:10px}
+.ev:last-child{border:none}.ev .w{flex:1}.ev b{color:var(--txt)}
+.ev.new{animation:flash 1.2s}
+@keyframes flash{from{background:rgba(247,185,43,.14)}to{background:transparent}}
+.ev a{font-size:9.5px;color:var(--faint)}
+.st{display:flex;justify-content:space-between;gap:10px;padding:8px 14px;
+ border-bottom:1px solid var(--line);font-size:12.5px}
+.st:last-child{border:none}.st span{color:var(--dim)}.st b{font-weight:700;text-align:right;word-break:break-all}
+.rules{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:12px;padding:16px 18px}
+.rules ol{margin:0;padding-left:18px;font-size:13.5px;line-height:1.9}
+.rules ol b{color:var(--gold)}
+.rules p{font-size:11.5px;color:var(--dim);line-height:1.65;margin:12px 0 0}
+#boot{padding:50px 16px;text-align:center;color:var(--dim);font-size:13.5px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<header><div class="hin">
+  <div class="logo">Last<i>Man</i></div>
+  <div class="m"><b class="g" id="h-pot">—</b><s>pot</s></div>
+  <div class="m"><b id="h-round">—</b><s>round</s></div>
+  <div class="m"><b id="h-buys">—</b><s>buys</s></div>
+  <div class="m"><b id="h-burn">—</b><s>supply burned</s></div>
+  <div class="m"><b id="h-paid">—</b><s>paid out</s></div>
+  <div class="m"><b id="h-bal">—</b><s>your tokens</s></div>
+  <div class="r">
+    <span class="chip" id="net">—</span>
+    <button class="sm" id="wallet">Connect wallet</button>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div id="boot">Reading the chain…</div>
+
+  <div id="app" style="display:none">
+    <div class="stage" id="stage">
+      <div class="kick">Contract</div>
+      <div id="ca" class="camint" title="click to copy">—</div>
+      <div class="kick">Last man standing</div>
+      <div class="who" id="who">—</div>
+      <div class="sub" id="sub"></div>
+      <div class="pot" id="pot">—</div>
+      <div class="potsub" id="potsub">goes to whoever is last when the clock ends</div>
+      <div class="clock" id="clock">--:--</div>
+      <div class="clocksub" id="clocksub">until it pays out, automatically</div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="acts" id="acts"></div>
+      <div class="msg dim" id="msg"></div>
+    </div>
+
+    <div class="trust">
+      <div class="tcard">
+        <b class="g" id="t-pot">—</b>
+        <s>held in an account with no private key. Check it yourself.</s>
+        <a id="t-pot-link" target="_blank" rel="noopener">view the pot →</a>
+      </div>
+      <div class="tcard">
+        <b class="u" id="t-burn">—</b>
+        <s>destroyed against the mint, not moved to a wallet.</s>
+        <a id="t-mint-link" target="_blank" rel="noopener">view the token →</a>
+      </div>
+      <div class="tcard">
+        <b id="t-paid">—</b>
+        <s>paid to winners so far, across <span id="t-rounds">0</span> rounds.</s>
+        <a id="t-prog-link" target="_blank" rel="noopener">view the program →</a>
+      </div>
+      <div class="tcard">
+        <b id="t-mintauth">—</b>
+        <s>the supply is fixed. No more can ever be created.</s>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="box">
+        <h3><span class="dotlive"></span>Live — every buy and payout</h3>
+        <div id="feed"><div class="ev"><span class="w" style="color:var(--dim)">Waiting for the next move…</span></div></div>
+      </div>
+      <div class="box"><h3>The numbers</h3><div id="stats"></div></div>
+    </div>
+
+    <div class="rules">
+      <ol>
+        <li>Buy the last slot by <b>burning tokens</b>.</li>
+        <li>Every buy <b>resets the clock — and shortens it</b>.</li>
+        <li>Each buy costs <b>more than the last</b>. Resets every round.</li>
+        <li>Last buyer when the clock hits zero <b>takes the whole pot</b>.</li>
+      </ol>
+      <p><b>Fees:</b> of the trading fees that come in, <b>10% funds the project</b> and <b>90% goes to the pot</b>. That split is taken on the way in, fixed in the program, and visible on every deposit. Nothing is taken from a payout — winners get the whole pot.</p>
+      <p>The pot sits in a program account with no private key in existence — not the developer's, not anyone's. Payout is a rule in the deployed code: once the clock is up <b>anyone</b> can trigger it, and it always pays the last buyer, never whoever pressed the button. If our keeper stops, any player can settle and the winner is still paid. Tokens spent are destroyed against the mint. Every claim here is checkable on-chain in ten seconds.</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import {
+  Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction, LAMPORTS_PER_SOL,
+} from "https://esm.sh/@solana/web3.js@1.95.3";
+import {
+  getAssociatedTokenAddress, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+} from "https://esm.sh/@solana/spl-token@0.4.9?deps=@solana/web3.js@1.95.3";
+import { sha256 } from "https://esm.sh/@noble/hashes@1.4.0/sha256";
+
+const CFG = await fetch("./config.json").then(r => r.json());
+const conn = new Connection(CFG.rpc, "confirmed");
+const PROGRAM_ID = new PublicKey(CFG.programId);
+const enc = s => new TextEncoder().encode(s);
+const gamePda  = PublicKey.findProgramAddressSync([enc("game")], PROGRAM_ID)[0];
+const vaultPda = PublicKey.findProgramAddressSync([enc("vault")], PROGRAM_ID)[0];
+
+const EXP = CFG.cluster === "localnet" ? null
+  : `https://solscan.io/{kind}/{id}${CFG.cluster === "devnet" ? "?cluster=devnet" : ""}`;
+const link = (kind, id) => EXP ? EXP.replace("{kind}", kind).replace("{id}", id) : null;
+
+const disc = n => sha256(enc("global:" + n)).slice(0, 8);
+const u64le = v => { const b = new Uint8Array(8); new DataView(b.buffer).setBigUint64(0, BigInt(v), true); return b; };
+const cat = (...xs) => { const o = new Uint8Array(xs.reduce((a, x) => a + x.length, 0));
+  let i = 0; for (const x of xs) { o.set(x, i); i += x.length; } return o; };
+
+// Game account layout, after the 8-byte discriminator
+function decode(buf) {
+  const d = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  let o = 8;
+  const key = () => { const k = new PublicKey(buf.slice(o, o + 32)); o += 32; return k; };
+  const u64 = () => { const v = d.getBigUint64(o, true); o += 8; return v; };
+  const i64 = () => { const v = Number(d.getBigInt64(o, true)); o += 8; return v; };
+  const u16 = () => { const v = d.getUint16(o, true); o += 2; return v; };
+  const u32 = () => { const v = d.getUint32(o, true); o += 4; return v; };
+  return {
+    authority: key(), mint: key(), treasury: key(), lastBuyer: key(),
+    round: Number(u64()), startSeconds: i64(), shrinkSeconds: i64(), minSeconds: i64(),
+    timerSeconds: i64(), deadline: i64(), costTokens: u64(),
+    floorBps: u16(), stepBps: u16(), cutBps: u16(), buyToPotBps: u16(),
+    buysThisRound: u32(), totalBurned: u64(), totalPaidOut: u64(), roundsSettled: Number(u64()),
+  };
+}
+
+let wallet = null, S = null, pot = 0, myTok = 0n, dec = 6, supply = 0n, mintAuth = null;
+let TOKPROG = TOKEN_PROGRAM_ID, feed = [], lastRound = null;
+const $ = id => document.getElementById(id);
+const sa = a => a.slice(0, 4) + "…" + a.slice(-4);
+const sol = n => (Number(n) / LAMPORTS_PER_SOL).toFixed(3);
+const tk = n => { const v = Number(n) / 10 ** dec;
+  return v >= 1e6 ? (v / 1e6).toFixed(2) + "M" : v >= 1e3 ? (v / 1e3).toFixed(0) + "k" : v.toFixed(0); };
+const mmss = s => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+const msg = (t, c = "dim") => { $("msg").textContent = t; $("msg").className = "msg " + c; };
+
+function prov() {
+  if (window.solana?.isPhantom) return window.solana;
+  if (window.solflare?.isSolflare) return window.solflare;
+  if (window.backpack) return window.backpack;
+  return null;
+}
+
+$("wallet").onclick = async () => {
+  const p = prov();
+  if (!p) { msg("No Solana wallet found. Install Phantom.", "err"); return; }
+  if (wallet) { try { await p.disconnect(); } catch {} wallet = null; $("wallet").textContent = "Connect wallet"; render(); return; }
+  try {
+    const r = await p.connect();
+    wallet = r.publicKey ?? p.publicKey;
+    $("wallet").textContent = sa(wallet.toBase58());
+    msg("Wallet connected.", "ok");
+    await refresh();
+  } catch { msg("Connection rejected.", "err"); }
+};
+
+async function send(ixs, label) {
+  const p = prov();
+  if (!p || !wallet) { msg("Connect a wallet first.", "err"); return; }
+  try {
+    msg(label + "…");
+    const tx = new Transaction().add(...ixs);
+    tx.feePayer = wallet;
+    tx.recentBlockhash = (await conn.getLatestBlockhash()).blockhash;
+    // Phantom's own API: it signs AND sends, so the wallet stays in control end
+    // to end. Signing ourselves and posting raw bytes is what drainers do, and
+    // wallets flag it as spoofing.
+    let sig;
+    if (p.signAndSendTransaction) {
+      const res = await p.signAndSendTransaction(tx);
+      sig = res.signature ?? res;
+    } else {
+      const signed = await p.signTransaction(tx);
+      sig = await conn.sendRawTransaction(signed.serialize());
+    }
+    msg("Confirming…");
+    await conn.confirmTransaction(sig, "confirmed");
+    msg(label + " confirmed.", "ok");
+    await refresh();
+  } catch (e) { msg(String(e?.message ?? e).slice(0, 160), "err"); }
+}
+
+async function buy() {
+ try {
+  // work the price out here, the same way the program does
+  const dyn = supply > 0n ? (supply * BigInt(S.floorBps)) / 10000n : 0n;
+  const price = S.costTokens > dyn ? S.costTokens : dyn;
+  const ata = await getAssociatedTokenAddress(S.mint, wallet, false, TOKPROG);
+  const ixs = [];
+  if (!(await conn.getAccountInfo(ata))) {
+    ixs.push(createAssociatedTokenAccountInstruction(wallet, ata, wallet, S.mint, TOKPROG));
+  }
+  const max = price * 12n / 10n;   // accept up to 20% above the quote
+  ixs.push(new TransactionInstruction({
+    programId: PROGRAM_ID,
+    keys: [
+      { pubkey: gamePda, isSigner: false, isWritable: true },
+      { pubkey: vaultPda, isSigner: false, isWritable: true },
+      { pubkey: S.mint, isSigner: false, isWritable: true },
+      { pubkey: ata, isSigner: false, isWritable: true },
+      { pubkey: S.treasury, isSigner: false, isWritable: true },
+      { pubkey: wallet, isSigner: true, isWritable: true },
+      { pubkey: TOKPROG, isSigner: false, isWritable: false },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    data: cat(disc("buy"), u64le(max), u64le(0)),
+  }));
+  await send(ixs, "Buying the slot");
+ } catch (e) { msg("buy failed: " + String((e && e.message) || e).slice(0, 170), "err"); console.error(e); }
+}
+
+async function settle() {
+  const empty = S.lastBuyer.equals(PublicKey.default);
+  await send([new TransactionInstruction({
+    programId: PROGRAM_ID,
+    keys: [
+      { pubkey: gamePda, isSigner: false, isWritable: true },
+      { pubkey: vaultPda, isSigner: false, isWritable: true },
+      { pubkey: empty ? wallet : S.lastBuyer, isSigner: false, isWritable: true },
+      { pubkey: wallet, isSigner: true, isWritable: false },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    data: disc("settle"),
+  })], "Settling the round");
+}
+
+async function refresh() {
+  const info = await conn.getAccountInfo(gamePda);
+  if (!info) { $("boot").textContent = "No game at that program ID. Check config.json."; return; }
+  S = decode(info.data);
+  pot = await conn.getBalance(vaultPda);
+  try {
+    const mi0 = await conn.getAccountInfo(S.mint);
+    TOKPROG = mi0 && mi0.owner.equals(TOKEN_2022_PROGRAM_ID) ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID;
+    const s = await conn.getTokenSupply(S.mint);
+    supply = BigInt(s.value.amount); dec = s.value.decimals;
+    const mi = await conn.getParsedAccountInfo(S.mint);
+    mintAuth = mi.value?.data?.parsed?.info?.mintAuthority ?? null;
+  } catch {}
+  if (wallet) {
+    try {
+      const ata = await getAssociatedTokenAddress(S.mint, wallet, false, TOKPROG);
+      const b = await conn.getTokenAccountBalance(ata);
+      myTok = BigInt(b.value.amount);
+    } catch { myTok = 0n; }
+  }
+  if (lastRound !== null && S.round > lastRound) push("<b>Round paid out</b>", null);
+  lastRound = S.round;
+  $("boot").style.display = "none"; $("app").style.display = "block";
+  render();
+}
+
+function push(what, sig) {
+  feed.unshift({ what, sig });
+  if (feed.length > 14) feed.pop();
+  $("feed").innerHTML = feed.map((f, i) => {
+    const l = f.sig && link("tx", f.sig);
+    return `<div class="ev ${i === 0 ? "new" : ""}"><span class="w">${f.what}</span>` +
+      (l ? `<a href="${l}" target="_blank" rel="noopener">verify ↗</a>` : "") + `</div>`;
+  }).join("");
+}
+
+function render() {
+  if (!S) return;
+  const now = Math.floor(Date.now() / 1000);
+  const left = S.deadline - now, over = left <= 0;
+  const empty = S.lastBuyer.equals(PublicKey.default);
+  const isMine = wallet && !empty && S.lastBuyer.equals(wallet);
+  const hot = !over && left < 45;
+  const dyn = supply > 0n ? (supply * BigInt(S.floorBps)) / 10000n : 0n;
+  const price = S.costTokens > dyn ? S.costTokens : dyn;
+
+  $("stage").className = "stage" + (isMine ? " mine" : "") + (hot || over ? " hot" : "");
+  $("ca").textContent = S.mint.toBase58();
+  $("ca").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(S.mint.toBase58()); msg("Contract address copied.", "ok"); };
+  $("who").textContent = empty ? "Nobody yet" : (isMine ? "YOU" : sa(S.lastBuyer.toBase58()));
+  $("who").className = "who" + (isMine ? " me" : "");
+  $("sub").textContent = `round ${S.round} · ${S.buysThisRound} buys · clock now ${mmss(S.timerSeconds)}`;
+  $("pot").textContent = sol(pot) + " SOL";
+  $("potsub").textContent = isMine ? "yours if nobody buys before zero"
+    : "goes to whoever is last when the clock ends";
+
+  const c = $("clock");
+  c.textContent = over ? "TIME" : mmss(left);
+  c.className = "clock" + (over || hot ? " hot" : left < 120 ? " warn" : "");
+  $("clocksub").textContent = over ? "round over — paying out" : "until it pays out, automatically";
+  const b = $("bar");
+  b.style.width = Math.max(0, Math.min(100, left / S.timerSeconds * 100)) + "%";
+  b.className = hot || over ? "hot" : "";
+
+  const acts = $("acts"); acts.innerHTML = "";
+  const btn = (cls, text, fn, dis) => { const x = document.createElement("button");
+    x.className = "big " + cls; x.textContent = text; x.disabled = !!dis; if (fn) x.onclick = fn;
+    acts.appendChild(x); };
+
+  if (over) {
+    btn("up", empty ? "Start the next round" : `Pay ${sa(S.lastBuyer.toBase58())} · start round ${S.round + 1}`, settle, !wallet);
+  } else if (isMine) {
+    const d = document.createElement("div");
+    d.style.cssText = "font-size:15px;font-weight:800;color:var(--up)";
+    d.textContent = "You hold the slot. Nobody buys before zero and the pot is yours.";
+    acts.appendChild(d);
+  } else {
+    const can = wallet && myTok >= price;
+    btn("gold", !wallet ? "Connect a wallet"
+      : myTok < price ? `Need ${tk(price)} tokens`
+      : `Buy the slot — burn ${tk(price)}`, buy, !can);
+    const a = document.createElement("a");
+    a.href = CFG.buyUrl || ("https://jup.ag/swap/SOL-" + S.mint.toBase58());
+    a.target = "_blank"; a.rel = "noopener";
+    a.innerHTML = '<button class="big">Buy tokens</button>';
+    acts.appendChild(a);
+  }
+
+  $("h-pot").textContent = sol(pot);
+  $("h-round").textContent = S.round;
+  $("h-buys").textContent = S.buysThisRound;
+  const burnedPct = supply > 0n ? Number(S.totalBurned) / (Number(supply) + Number(S.totalBurned)) * 100 : 0;
+  $("h-burn").textContent = burnedPct.toFixed(2) + "%";
+  $("h-paid").textContent = sol(S.totalPaidOut);
+  $("h-bal").textContent = wallet ? tk(myTok) : "—";
+  $("net").textContent = CFG.cluster;
+
+  $("t-pot").textContent = sol(pot) + " SOL";
+  $("t-burn").textContent = tk(S.totalBurned) + " burned";
+  $("t-paid").textContent = sol(S.totalPaidOut) + " SOL";
+  $("t-rounds").textContent = S.roundsSettled;
+  $("t-mintauth").textContent = mintAuth === null ? "Mint revoked" : "Mint still live";
+  $("t-mintauth").className = mintAuth === null ? "u" : "";
+  for (const [id, kind, val] of [["t-pot-link", "account", vaultPda.toBase58()],
+                                 ["t-mint-link", "token", S.mint.toBase58()],
+                                 ["t-prog-link", "account", PROGRAM_ID.toBase58()]]) {
+    const el = $(id), u = link(kind, val);
+    if (u) { el.href = u; el.style.display = ""; } else { el.style.display = "none"; }
+  }
+
+  $("stats").innerHTML = `
+    <div class="st"><span>Costs to buy</span><b>${tk(price)} tokens</b></div>
+    <div class="st"><span>Next buy costs</span><b>+${((S.stepBps - 10000) / 100).toFixed(0)}%</b></div>
+    <div class="st"><span>Each buy shortens by</span><b>${S.shrinkSeconds}s</b></div>
+    <div class="st"><span>Clock floor</span><b>${S.minSeconds}s</b></div>
+    <div class="st"><span>Round starts at</span><b>${mmss(S.startSeconds)}</b></div>
+    <div class="st"><span>Cost floor</span><b>${(S.floorBps / 100).toFixed(2)}% of remaining supply</b></div>
+    <div class="st"><span>Rounds settled</span><b>${S.roundsSettled}</b></div>
+    <div class="st"><span>Token</span><b>${sa(S.mint.toBase58())}</b></div>
+    <div class="st"><span>Pot</span><b>${sa(vaultPda.toBase58())}</b></div>`;
+}
+
+conn.onLogs(PROGRAM_ID, (logs) => {
+  const line = logs.logs.find(l => l.includes("Instruction:"));
+  if (!line) return;
+  const what = line.split("Instruction:")[1].trim();
+  const nice = { Buy: "<b>Slot taken</b> — tokens burned, clock reset",
+                 Settle: "<b>Round paid out</b> to the last buyer",
+                 DepositFees: "Fees added to the pot" }[what];
+  if (!nice) return;
+  push(nice, logs.signature);
+  refresh();
+}, "confirmed");
+
+await refresh();
+setInterval(render, 200);
+setInterval(refresh, 6000);
+</script>
+</body>
+</html>

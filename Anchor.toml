@@ -1,0 +1,19 @@
+[toolchain]
+anchor_version = "0.31.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+arena = "8Mr2PYbTuEfGHh1WC4pr5GBF2K8LJKjXeUYBP9VZi7XS"
+
+[programs.devnet]
+arena = "8Mr2PYbTuEfGHh1WC4pr5GBF2K8LJKjXeUYBP9VZi7XS"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "npx mocha -t 1000000 tests/**/*.ts"

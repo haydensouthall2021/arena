@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arena — give your token a game</title>
+<meta name="description" content="Any Solana token can attach a game to itself. A live pot fed by its own trading fees, and a slot people burn its supply to take.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06080B;--card:#0E1318;--card2:#141C23;--line:#1F2C36;
+ --txt:#F4F7F9;--dim:#7B909D;--faint:#485A66;--gold:#F5B72B;--up:#31D68F;--down:#F45B34}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--txt);font-family:Archivo,system-ui,sans-serif;
+ font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 90px}
+a{color:var(--gold);text-decoration:none}a:hover{text-decoration:underline}
+button{font:inherit;font-weight:700;cursor:pointer;border-radius:8px;border:1px solid var(--line);
+ background:var(--card2);color:var(--txt);padding:13px 24px;font-size:15px}
+button:hover{border-color:var(--gold)}
+button.go{background:var(--gold);border-color:var(--gold);color:#06080B}
+
+header{border-bottom:1px solid var(--line);background:var(--card)}
+.hin{max-width:900px;margin:0 auto;padding:13px 20px;display:flex;gap:14px;align-items:center}
+.logo{font-weight:900;font-size:18px;letter-spacing:-.025em}.logo i{color:var(--gold);font-style:normal}
+.chip{margin-left:auto;font-size:10px;padding:4px 10px;border:1px solid var(--down);
+ border-radius:99px;color:var(--down);font-weight:700}
+
+h1{margin:52px 0 16px;font-size:clamp(32px,6vw,54px);line-height:1.02;font-weight:900;
+ letter-spacing:-.04em;max-width:16ch}
+.lede{font-size:18px;color:var(--dim);max-width:60ch;margin:0 0 26px}
+.cta{display:flex;gap:11px;flex-wrap:wrap;margin-bottom:12px}
+
+h2{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);
+ font-weight:800;margin:46px 0 14px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px}
+.step .n{color:var(--gold);font-weight:900;font-size:23px;display:block;margin-bottom:8px}
+.step b{display:block;font-size:13.5px;margin-bottom:6px}
+.step p{margin:0;font-size:13px;color:var(--dim);line-height:1.6}
+
+.claims{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:12px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px}
+.c b{display:block;font-size:14px;margin-bottom:6px;color:var(--gold)}
+.c p{margin:0;font-size:13px;color:var(--dim);line-height:1.6}
+
+.status{background:var(--card);border:1px solid var(--down);border-radius:12px;
+ padding:18px 20px;margin-top:22px}
+.status b{color:var(--down)}
+.status p{margin:8px 0 0;font-size:13.5px;color:var(--dim);line-height:1.65}
+
+.foot{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
+ font-size:12.5px;color:var(--faint);line-height:1.8}
+</style>
+</head>
+<body>
+
+<header><div class="hin">
+  <div class="logo">Ar<i>ena</i></div>
+  <span class="chip">not deployed yet</span>
+</div></header>
+
+<div class="wrap">
+  <h1>Your coin launched. Now what?</h1>
+  <p class="lede">Most tokens have nothing to do after launch. No reason to hold, nothing burning supply, and the creator fees just sit in a wallet. Arena gives any token a game — a live pot fed by its own trading fees, and a slot people burn its supply to take.</p>
+
+  <div class="cta">
+    <a href="https://github.com/haydensouthall2021/arena"><button class="go">Read the code</button></a>
+  </div>
+
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><b>Point it at your mint</b>
+      <p>Paste your token's address, pick the round length and your cut. One transaction. No approval, no waiting, no gatekeeper.</p></div>
+    <div class="step"><span class="n">2</span><b>Send your fees in</b>
+      <p>Creator fees go into your game's pot instead of sitting idle. Anyone can top it up — that instruction is permissionless.</p></div>
+    <div class="step"><span class="n">3</span><b>Holders play</b>
+      <p>Buy the last slot by burning your token. Every buy resets the clock and shortens it. Last one standing at zero takes the pot.</p></div>
+    <div class="step"><span class="n">4</span><b>Supply falls</b>
+      <p>Every buy destroys tokens against your mint. Not moved to a wallet — burned. Your supply only goes one way.</p></div>
+  </div>
+
+  <h2>What is impossible, rather than promised</h2>
+  <div class="claims">
+    <div class="c"><b>We cannot touch your pot</b>
+      <p>The platform account is not even in the settle instruction. It is structurally impossible for us to take, block or redirect a payout. Not a policy — check the source.</p></div>
+    <div class="c"><b>Fees are capped in code</b>
+      <p>Platform share can never exceed 10%, registration never above 5 SOL, your own cut never above 20%. The program rejects anything higher. We could not raise them later if we wanted to.</p></div>
+    <div class="c"><b>Your settings freeze at registration</b>
+      <p>Timer, price floor, step, both cuts — fixed when you attach. Nobody can tilt a running game, including you.</p></div>
+    <div class="c"><b>Payout needs nobody's permission</b>
+      <p>Once a clock hits zero anyone can trigger the payout, and it always pays the last buyer rather than whoever pressed the button. If our keeper stops, your players still get paid.</p></div>
+  </div>
+
+  <div class="status">
+    <b>Where this actually is</b>
+    <p>The program is written and <b style="color:var(--up)">21 tests pass</b> on a local validator — including that two games cannot touch each other's pots, that you cannot play one game with another token, and that the platform authority has no route to any pot.</p>
+    <p>It is <b>not audited</b> and <b>not deployed to mainnet</b>. It will hold money for every token that attaches, so it needs a proper audit before it holds anyone's. Saying so here rather than burying it.</p>
+    <p>If you want your token to be one of the first games, get in touch.</p>
+  </div>
+
+  <div class="foot">
+    Code: <a href="https://github.com/haydensouthall2021/arena">github.com/haydensouthall2021/arena</a><br>
+    Built on Solana. Nothing here is financial advice or an offer of anything.
+  </div>
+</div>
+</body>
+</html>

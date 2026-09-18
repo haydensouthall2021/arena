@@ -1,0 +1,9 @@
+target/
+node_modules/
+.anchor/
+*-keypair.json
+.env
+launch.json
+app/config.json
+.DS_Store
+*.log
