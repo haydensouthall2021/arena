@@ -4,142 +4,260 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Arena — give your token a game</title>
-<meta name="description" content="Any Solana token can attach a game to itself. A live pot fed by its own trading fees, and a slot people burn its supply to take.">
+<meta name="description" content="Any Solana token can attach a game to itself. One transaction, permissionless. The pot sits at an address nobody holds a key to.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#06080B;--card:#0E1318;--card2:#141C23;--line:#1F2C36;
- --txt:#F4F7F9;--dim:#7B909D;--faint:#485A66;--gold:#F5B72B;--up:#31D68F;--down:#F45B34}
-*{box-sizing:border-box}html,body{margin:0}
-body{background:var(--bg);color:var(--txt);font-family:Archivo,system-ui,sans-serif;
- font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;line-height:1.5}
-.wrap{max-width:900px;margin:0 auto;padding:0 20px 90px}
-a{color:var(--gold);text-decoration:none}a:hover{text-decoration:underline}
-button{font:inherit;font-weight:700;cursor:pointer;border-radius:8px;border:1px solid var(--line);
- background:var(--card2);color:var(--txt);padding:13px 24px;font-size:15px}
-button:hover{border-color:var(--gold)}
-button.go{background:var(--gold);border-color:var(--gold);color:#06080B}
+:root{
+  --bg:#08090C; --ink:#0D0F14; --panel:#11141A; --line:#1C2028; --line2:#262C36;
+  --fg:#F2F4F7; --mid:#9AA5B1; --dim:#5C6673; --acc:#FFB224; --good:#3DDC97; --bad:#FF5D47;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:Inter,system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 500px at 12% -8%, rgba(255,178,36,.10), transparent 60%),
+    radial-gradient(700px 420px at 92% 4%, rgba(61,220,151,.06), transparent 62%)}
+.wrap{max-width:1020px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono)}
 
-header{border-bottom:1px solid var(--line);background:var(--card)}
-.hin{max-width:900px;margin:0 auto;padding:13px 20px;display:flex;gap:14px;align-items:center}
-.logo{font-weight:900;font-size:18px;letter-spacing:-.025em}.logo i{color:var(--gold);font-style:normal}
-.chip{margin-left:auto;font-size:10px;padding:4px 10px;border:1px solid var(--down);
- border-radius:99px;color:var(--down);font-weight:700}
+/* nav */
+nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);
+  background:rgba(8,9,12,.82);border-bottom:1px solid var(--line)}
+.nav{max-width:1020px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:-.02em}
+.brand .dot{width:22px;height:22px;border-radius:50%;border:2.5px solid var(--acc);position:relative}
+.brand .dot::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--acc)}
+.nav .sp{flex:1}
+.nav a.l{font-size:13.5px;color:var(--mid);font-weight:500}
+.nav a.l:hover{color:var(--fg)}
+.tag{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;
+  border:1px solid var(--bad);color:var(--bad);letter-spacing:.02em}
 
-h1{margin:52px 0 16px;font-size:clamp(32px,6vw,54px);line-height:1.02;font-weight:900;
- letter-spacing:-.04em;max-width:16ch}
-.lede{font-size:18px;color:var(--dim);max-width:60ch;margin:0 0 26px}
-.cta{display:flex;gap:11px;flex-wrap:wrap;margin-bottom:12px}
+/* hero */
+header{padding:86px 0 56px}
+h1{margin:0 0 20px;font-size:clamp(40px,7vw,74px);line-height:.98;font-weight:800;
+  letter-spacing:-.045em;max-width:13ch}
+h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--acc);
+  letter-spacing:-.01em}
+.lede{font-size:19px;color:var(--mid);max-width:60ch;margin:0 0 30px}
+.lede b{color:var(--fg);font-weight:600}
+.row{display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:9px;
+  font-weight:600;font-size:14.5px;border:1px solid var(--line2);background:var(--panel);
+  transition:.15s;cursor:pointer;font-family:inherit;color:var(--fg)}
+.btn:hover{border-color:var(--acc);transform:translateY(-1px)}
+.btn.p{background:var(--acc);border-color:var(--acc);color:#0A0B0E}
+.btn.p:hover{filter:brightness(1.08)}
 
-h2{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);
- font-weight:800;margin:46px 0 14px}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
-.step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px}
-.step .n{color:var(--gold);font-weight:900;font-size:23px;display:block;margin-bottom:8px}
-.step b{display:block;font-size:13.5px;margin-bottom:6px}
-.step p{margin:0;font-size:13px;color:var(--dim);line-height:1.6}
+/* rule */
+.rule{height:1px;background:linear-gradient(90deg,var(--line2),transparent);margin:0}
 
-.claims{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:12px}
-.c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px}
-.c b{display:block;font-size:14px;margin-bottom:6px;color:var(--gold)}
-.c p{margin:0;font-size:13px;color:var(--dim);line-height:1.6}
+/* section */
+section{padding:56px 0}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 6px}
+h2{margin:0 0 8px;font-size:clamp(25px,3.6vw,34px);font-weight:700;letter-spacing:-.03em}
+h2 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--acc)}
+.sub{color:var(--mid);max-width:62ch;margin:0 0 28px;font-size:15.5px}
 
-.status{background:var(--card);border:1px solid var(--down);border-radius:12px;
- padding:18px 20px;margin-top:22px}
-.status b{color:var(--down)}
-.status p{margin:8px 0 0;font-size:13.5px;color:var(--dim);line-height:1.65}
+/* live demo */
+.game{background:var(--ink);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.gbar{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid var(--line);
+  background:var(--panel);font-family:var(--mono);font-size:11px;color:var(--dim)}
+.gbar .live{width:6px;height:6px;border-radius:50%;background:var(--good);animation:p 1.7s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.2}}
+.gbody{padding:28px 24px;text-align:center}
+.slot{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
+.who{font-size:19px;font-weight:700;margin:4px 0 0;letter-spacing:-.02em}
+.who.me{color:var(--acc)}
+.pot{font-size:clamp(44px,8vw,68px);font-weight:800;letter-spacing:-.045em;line-height:1;
+  margin:18px 0 2px;color:var(--good)}
+.potl{font-size:13px;color:var(--mid);margin-bottom:20px}
+.clk{font-family:var(--mono);font-size:clamp(30px,5.5vw,42px);font-weight:700;letter-spacing:-.02em}
+.clk.w{color:var(--acc)}.clk.h{color:var(--bad)}
+.clkl{font-size:12px;color:var(--dim);margin-bottom:14px}
+.track{height:5px;background:var(--line);border-radius:3px;overflow:hidden;max-width:440px;margin:0 auto 20px}
+.track i{display:block;height:100%;background:var(--acc);transition:width .2s linear}
+.track i.h{background:var(--bad)}
+.msg{margin-top:13px;font-size:13px;color:var(--dim);min-height:19px}
+.msg.w{color:var(--good);font-weight:600}.msg.l{color:var(--bad)}
+.gfoot{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.gfoot div{padding:12px 14px;text-align:center;border-right:1px solid var(--line)}
+.gfoot div:last-child{border:none}
+.gfoot b{display:block;font-family:var(--mono);font-size:14px;font-weight:700}
+.gfoot s{font-size:10px;color:var(--dim);text-decoration:none;letter-spacing:.05em;text-transform:uppercase}
+@media(max-width:640px){.gfoot{grid-template-columns:repeat(2,1fr)}.gfoot div:nth-child(2){border-right:none}}
 
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.st{background:var(--ink);padding:22px 20px}
+.st .n{font-family:var(--mono);font-size:11px;color:var(--acc);margin-bottom:12px;display:block}
+.st b{display:block;font-size:15px;margin-bottom:7px;font-weight:650;letter-spacing:-.01em}
+.st p{margin:0;font-size:13.5px;color:var(--mid);line-height:1.6}
 
-.demo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
-.demo.hot{border-color:var(--down)}
-.dtop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
-.dkick{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:800}
-.dwho{font-size:18px;font-weight:900;margin-top:3px}
-.dwho.me{color:var(--gold)}
-.dpot{text-align:right}
-.dpot b{display:block;font-size:26px;font-weight:900;color:var(--up);line-height:1.1}
-.dpot s{font-size:10.5px;color:var(--dim);text-decoration:none}
-.dclock{font-size:40px;font-weight:900;letter-spacing:-.03em;margin:14px 0 2px}
-.dclock.warn{color:var(--gold)}.dclock.hot{color:var(--down)}
-.dsub{font-size:11.5px;color:var(--dim);margin-bottom:12px}
-.dbar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:14px}
-.dbar i{display:block;height:100%;background:var(--gold);transition:width .2s linear}
-.dbar i.hot{background:var(--down)}
-.dmsg{font-size:12.5px;color:var(--dim);margin-top:10px;min-height:18px}
-.dmsg.win{color:var(--up);font-weight:700}.dmsg.lose{color:var(--down)}
-.foot{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
- font-size:12.5px;color:var(--faint);line-height:1.8}
+/* guarantees */
+.gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:12px}
+.g{background:var(--ink);border:1px solid var(--line);border-radius:13px;padding:22px}
+.g h3{margin:0 0 9px;font-size:16px;font-weight:650;letter-spacing:-.015em;
+  display:flex;align-items:center;gap:9px}
+.g h3 .tick{color:var(--good);font-size:14px}
+.g p{margin:0;font-size:13.5px;color:var(--mid);line-height:1.62}
+.g code{font-family:var(--mono);font-size:12.5px;color:var(--acc);
+  background:rgba(255,178,36,.08);padding:1px 6px;border-radius:4px}
+
+/* other games */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.mode{background:var(--ink);border:1px solid var(--line);border-radius:13px;padding:20px;
+  position:relative;overflow:hidden}
+.mode .badge{position:absolute;top:16px;right:16px;font-family:var(--mono);font-size:9.5px;
+  padding:3px 7px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase}
+.mode .badge.live{background:rgba(61,220,151,.12);color:var(--good);border:1px solid rgba(61,220,151,.3)}
+.mode .badge.spec{background:rgba(154,165,177,.08);color:var(--dim);border:1px solid var(--line2)}
+.mode b{display:block;font-size:16px;margin-bottom:8px;font-weight:650;letter-spacing:-.015em;padding-right:64px}
+.mode p{margin:0;font-size:13.5px;color:var(--mid);line-height:1.6}
+
+/* status */
+.status{border:1px solid var(--line2);border-left:3px solid var(--acc);border-radius:12px;
+  padding:24px 26px;background:var(--ink)}
+.status h3{margin:0 0 12px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.status p{margin:0 0 11px;font-size:14px;color:var(--mid);line-height:1.65}
+.status p:last-child{margin:0}
+.status b.ok{color:var(--good)}.status b.no{color:var(--bad)}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding:26px 0 70px;
+  font-size:13px;color:var(--dim)}
+footer a{color:var(--acc)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<header><div class="hin">
-  <div class="logo">Ar<i>ena</i></div>
-  <span class="chip">not deployed yet</span>
-</div></header>
+<nav><div class="nav">
+  <a href="#" class="brand"><span class="dot"></span>Arena</a>
+  <span class="sp"></span>
+  <a href="#play" class="l">Play</a>
+  <a href="#how" class="l">How</a>
+  <a href="#guarantees" class="l">Guarantees</a>
+  <a href="https://github.com/haydensouthall2021/arena" class="l">Code</a>
+  <span class="tag">not deployed</span>
+</div></nav>
 
 <div class="wrap">
-  <h1>Your coin launched. Now what?</h1>
-  <p class="lede">Most tokens have nothing to do after launch. No reason to hold, nothing burning supply, and the creator fees just sit in a wallet. Arena gives any token a game — a live pot fed by its own trading fees, and a slot people burn its supply to take.</p>
 
-  <div class="cta">
-    <a href="https://github.com/haydensouthall2021/arena"><button class="go">Read the code</button></a>
+<header>
+  <h1>Your coin launched.<br><em>Now what?</em></h1>
+  <p class="lede">Most tokens have nothing to do after launch. No reason to hold, nothing burning supply, and the creator fees sit in a wallet. <b>Arena gives any token a game</b> — one transaction, permissionless, no approval needed.</p>
+  <div class="row">
+    <a href="#play" class="btn p">Play it now →</a>
+    <a href="https://github.com/haydensouthall2021/arena" class="btn">Read the code</a>
   </div>
+</header>
 
+<div class="rule"></div>
 
-  <h2>Try it</h2>
-  <div class="demo">
-    <div class="dtop">
-      <div><span class="dkick">Last man standing</span><div class="dwho" id="d-who">Nobody yet</div></div>
-      <div class="dpot"><b id="d-pot">3.200 SOL</b><s>in the pot</s></div>
+<section id="play">
+  <p class="eyebrow">Live demo</p>
+  <h2>Buy the last slot. <em>Hold it to zero.</em></h2>
+  <p class="sub">Every buy resets the clock and makes it shorter. Rivals here are simulated so you can feel the mechanic — the real thing reads a Solana program.</p>
+
+  <div class="game" id="game">
+    <div class="gbar"><span class="live"></span> demo · in-browser · no wallet needed</div>
+    <div class="gbody">
+      <div class="slot">Last man standing</div>
+      <div class="who" id="who">Nobody yet</div>
+      <div class="pot" id="pot">3.200 SOL</div>
+      <div class="potl" id="potl">goes to whoever holds the slot at zero</div>
+      <div class="clk" id="clk">5:00</div>
+      <div class="clkl" id="clkl">until it pays out</div>
+      <div class="track"><i id="track"></i></div>
+      <button class="btn p" id="buy" style="min-width:250px;justify-content:center">Buy the slot — burn 2.50M</button>
+      <div class="msg" id="msg">Buy it, then hold on. Every buy resets the clock and shortens it.</div>
     </div>
-    <div class="dclock" id="d-clock">5:00</div>
-    <div class="dsub" id="d-sub">round 1 &middot; 0 buys &middot; clock 5:00</div>
-    <div class="dbar"><i id="d-bar"></i></div>
-    <button class="go" id="d-buy" style="width:100%">Buy the slot &mdash; burn 2.50M</button>
-    <div class="dmsg" id="d-msg">Buy it, then hold on. Every buy resets the clock and shortens it.</div>
+    <div class="gfoot">
+      <div><b id="f-round">1</b><s>round</s></div>
+      <div><b id="f-buys">0</b><s>buys</s></div>
+      <div><b id="f-timer">5:00</b><s>clock now</s></div>
+      <div><b id="f-burn">0.00%</b><s>supply burned</s></div>
+    </div>
   </div>
-  <p style="font-size:12.5px;color:var(--faint);margin:10px 0 0">
-    A demo running in your browser so you can feel the mechanic &mdash; the rivals are simulated.
-    The real version is this reading a Solana program.
-  </p>
+</section>
 
-  <h2>How it works</h2>
+<div class="rule"></div>
+
+<section id="how">
+  <p class="eyebrow">How it works</p>
+  <h2>Four steps, <em>one transaction</em></h2>
   <div class="steps">
-    <div class="step"><span class="n">1</span><b>Point it at your mint</b>
-      <p>Paste your token's address, pick the round length and your cut. One transaction. No approval, no waiting, no gatekeeper.</p></div>
-    <div class="step"><span class="n">2</span><b>Send your fees in</b>
-      <p>Creator fees go into your game's pot instead of sitting idle. Anyone can top it up — that instruction is permissionless.</p></div>
-    <div class="step"><span class="n">3</span><b>Holders play</b>
-      <p>Buy the last slot by burning your token. Every buy resets the clock and shortens it. Last one standing at zero takes the pot.</p></div>
-    <div class="step"><span class="n">4</span><b>Supply falls</b>
+    <div class="st"><span class="n">01</span><b>Point it at your mint</b>
+      <p>Paste your token address, pick the round length and your cut. No approval, no waiting, no gatekeeper.</p></div>
+    <div class="st"><span class="n">02</span><b>Send your fees in</b>
+      <p>Creator fees become the pot instead of sitting idle. Anyone can top it up — that instruction is permissionless.</p></div>
+    <div class="st"><span class="n">03</span><b>Holders play</b>
+      <p>Buy the last slot by burning your token. Every buy resets the clock and shortens it. Last one holding takes the pot.</p></div>
+    <div class="st"><span class="n">04</span><b>Supply falls</b>
       <p>Every buy destroys tokens against your mint. Not moved to a wallet — burned. Your supply only goes one way.</p></div>
   </div>
+</section>
 
-  <h2>What is impossible, rather than promised</h2>
-  <div class="claims">
-    <div class="c"><b>We cannot touch your pot</b>
-      <p>The platform account is not even in the settle instruction. It is structurally impossible for us to take, block or redirect a payout. Not a policy — check the source.</p></div>
-    <div class="c"><b>Fees are capped in code</b>
-      <p>Platform share can never exceed 10%, registration never above 5 SOL, your own cut never above 20%. The program rejects anything higher. We could not raise them later if we wanted to.</p></div>
-    <div class="c"><b>Your settings freeze at registration</b>
-      <p>Timer, price floor, step, both cuts — fixed when you attach. Nobody can tilt a running game, including you.</p></div>
-    <div class="c"><b>Payout needs nobody's permission</b>
-      <p>Once a clock hits zero anyone can trigger the payout, and it always pays the last buyer rather than whoever pressed the button. If our keeper stops, your players still get paid.</p></div>
+<div class="rule"></div>
+
+<section id="guarantees">
+  <p class="eyebrow">Guarantees</p>
+  <h2>Impossible, <em>not promised</em></h2>
+  <p class="sub">Every claim below is a property of the deployed program, not a policy. All four are checkable in the source in about ten minutes.</p>
+  <div class="gr">
+    <div class="g"><h3><span class="tick">✓</span>We cannot touch your pot</h3>
+      <p>The platform account isn't even in the <code>settle</code> instruction. There is no code path by which we take, block or redirect a payout. It isn't that we won't — there's nothing to call.</p></div>
+    <div class="g"><h3><span class="tick">✓</span>Fees are capped in code</h3>
+      <p>Platform share can never exceed 10%, registration never above 5 SOL, your own cut never above 20%. The program rejects anything higher at registration.</p></div>
+    <div class="g"><h3><span class="tick">✓</span>Your settings freeze on attach</h3>
+      <p>Timer, price floor, step, both cuts — fixed the moment you register. Nobody can tilt a running game, including you.</p></div>
+    <div class="g"><h3><span class="tick">✓</span>Payout needs nobody's permission</h3>
+      <p><code>settle</code> is permissionless and always pays the last buyer, never the caller. If our keeper dies, any player can settle and the winner is still paid.</p></div>
   </div>
+</section>
 
+<div class="rule"></div>
+
+<section>
+  <p class="eyebrow">Game modes</p>
+  <h2>One is built. <em>The rest are specced.</em></h2>
+  <div class="modes">
+    <div class="mode"><span class="badge live">built</span><b>Last Man</b>
+      <p>Buy the last slot. Nobody buys after you before the clock ends, you take the pot. Each buy shortens the clock by 2s, floor at 30s.</p></div>
+    <div class="mode"><span class="badge spec">specced</span><b>The Siege</b>
+      <p>One wallet holds a castle with hit points. Attackers burn to damage it, the holder burns to repair. Only the biggest attacker takes it — so attackers race each other while fighting the holder.</p></div>
+    <div class="mode"><span class="badge spec">specced</span><b>The Heist</b>
+      <p>Co-op. Burn a target collectively before the deadline and everyone who contributed splits the pot. Miss it and the target comes down. The only mode where players want more players.</p></div>
+    <div class="mode"><span class="badge spec">specced</span><b>The Split</b>
+      <p>Two sides, burn to back one, bigger side takes the pot. Weighted by wallet count rather than amount, so a whale can tip the result but cannot take the prize.</p></div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section>
   <div class="status">
-    <b>Where this actually is</b>
-    <p>The program is written and <b style="color:var(--up)">21 tests pass</b> on a local validator — including that two games cannot touch each other's pots, that you cannot play one game with another token, and that the platform authority has no route to any pot.</p>
-    <p>It is <b>not audited</b> and <b>not deployed to mainnet</b>. It will hold money for every token that attaches, so it needs a proper audit before it holds anyone's. Saying so here rather than burying it.</p>
-    <p>If you want your token to be one of the first games, get in touch.</p>
+    <h3>Where this actually is</h3>
+    <p>The program is written and <b class="ok">21 tests pass</b> on a local validator — including that two games cannot reach into each other's pots, that you cannot play one game with another token, and that the platform authority has no route to any pot.</p>
+    <p>It is <b class="no">not audited</b> and <b class="no">not currently deployed</b>. It will hold money for every token that attaches, so it needs a proper audit before it holds anyone's. Stated here rather than buried.</p>
+    <p>Built this week. If you want your token to be one of the first games, get in touch — the first few are free.</p>
   </div>
+</section>
 
-  <div class="foot">
-    Code: <a href="https://github.com/haydensouthall2021/arena">github.com/haydensouthall2021/arena</a><br>
-    Built on Solana. Nothing here is financial advice or an offer of anything.
-  </div>
+<footer><div>
+  <a href="https://github.com/haydensouthall2021/arena">github.com/haydensouthall2021/arena</a> · Built on Solana<br>
+  Nothing here is financial advice or an offer of anything.
+</div></footer>
+
 </div>
 
 <script>
@@ -149,44 +267,48 @@ function ad(){var s="";for(var i=0;i<44;i++)s+=A[Math.floor(Math.random()*58)];r
 function sa(a){return a.slice(0,4)+"\u2026"+a.slice(-4);}
 function S(n){return (Math.abs(n)<10?n.toFixed(3):n.toFixed(2))+" SOL";}
 function mm(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
-var RIV=[];for(var i=0;i<6;i++)RIV.push({n:ad(),won:0});
-var ME={n:"you"};
-var G={last:null,timer:300,left:300,pot:3.2,round:1,buys:0,cost:2.5e6,t:Date.now()};
+var RIV=[];for(var i=0;i<6;i++)RIV.push({n:ad()});
+var ME={n:"you"}, SUP=1e9;
+var G={last:null,timer:300,left:300,pot:3.2,round:1,buys:0,cost:2.5e6,burn:0,t:Date.now()};
 var $=function(i){return document.getElementById(i);};
-function take(who){
-  G.last=who;G.buys++;G.timer=Math.max(30,G.timer-2);G.left=G.timer;G.cost*=1.12;
-  $("d-msg").className="dmsg";
-  $("d-msg").textContent = who===ME
-    ? "You hold the slot. Nobody buys before zero and the pot is yours."
-    : sa(who.n)+" took it off you. Buy it back?";
+function take(w){
+  G.last=w;G.buys++;G.burn+=G.cost;G.timer=Math.max(30,G.timer-2);G.left=G.timer;G.cost*=1.12;
+  var m=$("msg");m.className="msg";
+  m.textContent = w===ME ? "You hold the slot. Nobody buys before zero and the pot is yours."
+                         : sa(w.n)+" took it off you. Buy it back?";
 }
 function draw(){
   var now=Date.now(),dt=(now-G.t)/1000;G.t=now;
-  G.left-=dt; G.pot+=dt*0.004;
+  G.left-=dt;G.pot+=dt*0.005;
   if(G.left<=0){
-    if(G.last===ME){$("d-msg").className="dmsg win";$("d-msg").textContent="You were last. "+S(G.pot)+" is yours.";}
-    else if(G.last){$("d-msg").className="dmsg lose";$("d-msg").textContent=sa(G.last.n)+" was last and took "+S(G.pot)+".";}
-    G.pot=0.4+Math.random()*1.4;G.round++;G.buys=0;G.timer=300;G.left=300;G.cost=2.5e6;G.last=null;
+    var m=$("msg");
+    if(G.last===ME){m.className="msg w";m.textContent="You were last standing. "+S(G.pot)+" is yours.";}
+    else if(G.last){m.className="msg l";m.textContent=sa(G.last.n)+" was last and took "+S(G.pot)+".";}
+    G.pot=0.4+Math.random()*1.6;G.round++;G.buys=0;G.timer=300;G.left=300;G.cost=2.5e6;G.last=null;
   }
-  if(G.last&&Math.random()<(G.left<45?0.012:0.0022)){
+  if(G.last&&Math.random()<(G.left<45?0.013:0.0024)){
     var r=RIV[Math.floor(Math.random()*RIV.length)];
     if(r!==G.last) take(r);
   }
   var hot=G.left<45,mine=G.last===ME;
-  $("d-who").textContent=G.last?(mine?"YOU":sa(G.last.n)):"Nobody yet";
-  $("d-who").className="dwho"+(mine?" me":"");
-  $("d-pot").textContent=S(G.pot);
-  $("d-clock").textContent=mm(G.left);
-  $("d-clock").className="dclock"+(hot?" hot":G.left<120?" warn":"");
-  $("d-sub").textContent="round "+G.round+" \u00b7 "+G.buys+" buys \u00b7 clock "+mm(G.timer);
-  var b=$("d-bar");b.style.width=Math.max(0,Math.min(100,G.left/G.timer*100))+"%";
-  b.className=hot?"hot":"";
-  document.querySelector(".demo").className="demo"+(hot?" hot":"");
-  var btn=$("d-buy");
-  btn.disabled=mine;
-  btn.textContent=mine?"You hold the slot":"Buy the slot \u2014 burn "+(G.cost/1e6).toFixed(2)+"M";
+  $("who").textContent=G.last?(mine?"YOU":sa(G.last.n)):"Nobody yet";
+  $("who").className="who"+(mine?" me":"");
+  $("pot").textContent=S(G.pot);
+  $("potl").textContent=mine?"yours if nobody buys before zero":"goes to whoever holds the slot at zero";
+  $("clk").textContent=mm(G.left);
+  $("clk").className="clk"+(hot?" h":G.left<120?" w":"");
+  var t=$("track");t.style.width=Math.max(0,Math.min(100,G.left/G.timer*100))+"%";
+  t.className=hot?"h":"";
+  $("game").style.borderColor=hot?"var(--bad)":(mine?"var(--acc)":"var(--line)");
+  var b=$("buy");b.disabled=mine;
+  b.textContent=mine?"You hold the slot":"Buy the slot \u2014 burn "+(G.cost/1e6).toFixed(2)+"M";
+  b.style.opacity=mine?.4:1;
+  $("f-round").textContent=G.round;
+  $("f-buys").textContent=G.buys;
+  $("f-timer").textContent=mm(G.timer);
+  $("f-burn").textContent=(G.burn/SUP*100).toFixed(2)+"%";
 }
-$("d-buy").onclick=function(){ if(G.last!==ME) take(ME); draw(); };
+$("buy").onclick=function(){ if(G.last!==ME) take(ME); draw(); };
 draw();setInterval(draw,140);
 })();
 </script>
