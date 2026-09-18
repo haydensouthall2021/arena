@@ -50,6 +50,24 @@ h2{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)
 .status b{color:var(--down)}
 .status p{margin:8px 0 0;font-size:13.5px;color:var(--dim);line-height:1.65}
 
+
+.demo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.demo.hot{border-color:var(--down)}
+.dtop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.dkick{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.dwho{font-size:18px;font-weight:900;margin-top:3px}
+.dwho.me{color:var(--gold)}
+.dpot{text-align:right}
+.dpot b{display:block;font-size:26px;font-weight:900;color:var(--up);line-height:1.1}
+.dpot s{font-size:10.5px;color:var(--dim);text-decoration:none}
+.dclock{font-size:40px;font-weight:900;letter-spacing:-.03em;margin:14px 0 2px}
+.dclock.warn{color:var(--gold)}.dclock.hot{color:var(--down)}
+.dsub{font-size:11.5px;color:var(--dim);margin-bottom:12px}
+.dbar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:14px}
+.dbar i{display:block;height:100%;background:var(--gold);transition:width .2s linear}
+.dbar i.hot{background:var(--down)}
+.dmsg{font-size:12.5px;color:var(--dim);margin-top:10px;min-height:18px}
+.dmsg.win{color:var(--up);font-weight:700}.dmsg.lose{color:var(--down)}
 .foot{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
  font-size:12.5px;color:var(--faint);line-height:1.8}
 </style>
@@ -68,6 +86,24 @@ h2{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)
   <div class="cta">
     <a href="https://github.com/haydensouthall2021/arena"><button class="go">Read the code</button></a>
   </div>
+
+
+  <h2>Try it</h2>
+  <div class="demo">
+    <div class="dtop">
+      <div><span class="dkick">Last man standing</span><div class="dwho" id="d-who">Nobody yet</div></div>
+      <div class="dpot"><b id="d-pot">3.200 SOL</b><s>in the pot</s></div>
+    </div>
+    <div class="dclock" id="d-clock">5:00</div>
+    <div class="dsub" id="d-sub">round 1 &middot; 0 buys &middot; clock 5:00</div>
+    <div class="dbar"><i id="d-bar"></i></div>
+    <button class="go" id="d-buy" style="width:100%">Buy the slot &mdash; burn 2.50M</button>
+    <div class="dmsg" id="d-msg">Buy it, then hold on. Every buy resets the clock and shortens it.</div>
+  </div>
+  <p style="font-size:12.5px;color:var(--faint);margin:10px 0 0">
+    A demo running in your browser so you can feel the mechanic &mdash; the rivals are simulated.
+    The real version is this reading a Solana program.
+  </p>
 
   <h2>How it works</h2>
   <div class="steps">
@@ -105,5 +141,54 @@ h2{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)
     Built on Solana. Nothing here is financial advice or an offer of anything.
   </div>
 </div>
+
+<script>
+(function(){
+var A="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+function ad(){var s="";for(var i=0;i<44;i++)s+=A[Math.floor(Math.random()*58)];return s;}
+function sa(a){return a.slice(0,4)+"\u2026"+a.slice(-4);}
+function S(n){return (Math.abs(n)<10?n.toFixed(3):n.toFixed(2))+" SOL";}
+function mm(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+var RIV=[];for(var i=0;i<6;i++)RIV.push({n:ad(),won:0});
+var ME={n:"you"};
+var G={last:null,timer:300,left:300,pot:3.2,round:1,buys:0,cost:2.5e6,t:Date.now()};
+var $=function(i){return document.getElementById(i);};
+function take(who){
+  G.last=who;G.buys++;G.timer=Math.max(30,G.timer-2);G.left=G.timer;G.cost*=1.12;
+  $("d-msg").className="dmsg";
+  $("d-msg").textContent = who===ME
+    ? "You hold the slot. Nobody buys before zero and the pot is yours."
+    : sa(who.n)+" took it off you. Buy it back?";
+}
+function draw(){
+  var now=Date.now(),dt=(now-G.t)/1000;G.t=now;
+  G.left-=dt; G.pot+=dt*0.004;
+  if(G.left<=0){
+    if(G.last===ME){$("d-msg").className="dmsg win";$("d-msg").textContent="You were last. "+S(G.pot)+" is yours.";}
+    else if(G.last){$("d-msg").className="dmsg lose";$("d-msg").textContent=sa(G.last.n)+" was last and took "+S(G.pot)+".";}
+    G.pot=0.4+Math.random()*1.4;G.round++;G.buys=0;G.timer=300;G.left=300;G.cost=2.5e6;G.last=null;
+  }
+  if(G.last&&Math.random()<(G.left<45?0.012:0.0022)){
+    var r=RIV[Math.floor(Math.random()*RIV.length)];
+    if(r!==G.last) take(r);
+  }
+  var hot=G.left<45,mine=G.last===ME;
+  $("d-who").textContent=G.last?(mine?"YOU":sa(G.last.n)):"Nobody yet";
+  $("d-who").className="dwho"+(mine?" me":"");
+  $("d-pot").textContent=S(G.pot);
+  $("d-clock").textContent=mm(G.left);
+  $("d-clock").className="dclock"+(hot?" hot":G.left<120?" warn":"");
+  $("d-sub").textContent="round "+G.round+" \u00b7 "+G.buys+" buys \u00b7 clock "+mm(G.timer);
+  var b=$("d-bar");b.style.width=Math.max(0,Math.min(100,G.left/G.timer*100))+"%";
+  b.className=hot?"hot":"";
+  document.querySelector(".demo").className="demo"+(hot?" hot":"");
+  var btn=$("d-buy");
+  btn.disabled=mine;
+  btn.textContent=mine?"You hold the slot":"Buy the slot \u2014 burn "+(G.cost/1e6).toFixed(2)+"M";
+}
+$("d-buy").onclick=function(){ if(G.last!==ME) take(ME); draw(); };
+draw();setInterval(draw,140);
+})();
+</script>
 </body>
 </html>
