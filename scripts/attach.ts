@@ -19,8 +19,8 @@ import fs from "fs";
 const START_SECONDS = 600;   // round with nobody playing: 10 minutes
 const SHRINK_SECONDS = 2;    // each buy knocks this off the clock
 const MIN_SECONDS = 30;      // the clock never goes below this
-const FLOOR_BPS = 25;        // a buy costs 0.25% of REMAINING supply
-const STEP_BPS = 11_200;     // each buy costs 12% more, resets each round
+const FLOOR_BPS = 10;          // a claim costs 0.10% of REMAINING supply
+const STEP_BPS = 10_500;       // each claim costs 5% more, resets each round
 const CREATOR_BPS = 1_000;   // 10% of fees to the coin's own treasury
 // ───────────────────────────────────────────────────────
 

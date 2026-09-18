@@ -6,10 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-arena = "8Mr2PYbTuEfGHh1WC4pr5GBF2K8LJKjXeUYBP9VZi7XS"
+arena = "oDDawv2GGcWhMCVjsxfBppYZUTp8XF1nGcqNUSFuFWL"
 
 [programs.devnet]
-arena = "8Mr2PYbTuEfGHh1WC4pr5GBF2K8LJKjXeUYBP9VZi7XS"
+arena = "oDDawv2GGcWhMCVjsxfBppYZUTp8XF1nGcqNUSFuFWL"
 
 [provider]
 cluster = "localnet"

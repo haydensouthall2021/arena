@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::system_program;
 use anchor_spl::token_interface::{self as token, Burn, Mint, TokenAccount, TokenInterface};
 
-declare_id!("8Mr2PYbTuEfGHh1WC4pr5GBF2K8LJKjXeUYBP9VZi7XS");
+declare_id!("oDDawv2GGcWhMCVjsxfBppYZUTp8XF1nGcqNUSFuFWL");
 
 /// Arena.
 ///

@@ -1,9 +1,9 @@
 {
   "cluster": "https://mainnet.helius-rpc.com/?api-key=14fe4366-ff04-452d-a864-040a0b82d050",
-  "programId": "8Mr2PYbTuEfGHh1WC4pr5GBF2K8LJKjXeUYBP9VZi7XS",
-  "platform": "EZ8Xu5CEEKvpJ7QFuYGz59zZRn2z3QkGfMVgfToChSmf",
+  "programId": "oDDawv2GGcWhMCVjsxfBppYZUTp8XF1nGcqNUSFuFWL",
+  "platform": "HrVZ3BqxEaTNQQqiAhAZu4WtwSt4YgBTSAE3r7T6AwFE",
   "treasury": "B6gKzoSCC6pW9Wgf3R2ujSkux3NELYDwwTw4u5v3X98W",
   "registerFee": 500000000,
   "platformBps": 500,
-  "setUpAt": "2026-09-18T12:17:12.028Z"
+  "setUpAt": "2026-09-18T17:58:49.737Z"
 }
